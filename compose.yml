@@ -1,4 +1,25 @@
+networks:
+  default:
+    name: docker_network
+
+
 services:
+
+  vortex:
+    image: revoltchat/vortex:0.3.0-alpha.1
+    restart: always
+    ports:
+      - "8080:8080"
+      - "$RTC_MIN_PORT-$RTC_MAX_PORT:$RTC_MIN_PORT-$RTC_MAX_PORT/tcp"
+      - "$RTC_MIN_PORT-$RTC_MAX_PORT:$RTC_MIN_PORT-$RTC_MAX_PORT/udp"
+    env_file:
+      - .env
+
+  migration:
+    image: node:21
+    volumes:
+      - ./migrations:/cwd
+    command: "bash -c 'while true; do sleep 86400; done'"
   # MongoDB database
   database:
     image: mongo
@@ -32,6 +53,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - ./data/caddy-data:/data
       - ./data/caddy-config:/config
+      - /home/cofedish/ssl/certs:/ssl/certs
 
   # API server (delta)
   api:
