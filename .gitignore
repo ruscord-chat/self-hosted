@@ -1,6 +1,1 @@
-data*
 
-.env
-Revolt.toml
-
-compose.override.yml
